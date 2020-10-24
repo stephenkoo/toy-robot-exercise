@@ -52,6 +52,15 @@ Lint TypeScript code using ESLint and attempt to fix linting errors.
 
 Format code using Prettier.
 
+#### `yarn run test`
+
+Runs the jest tests.
+
+#### `yarn run test:dev`
+
+Run the jest tests in watch mode - re-runs tests after file changes.
+
+
 ## Description
 
 - The application is a simulation of a toy robot moving on a square tabletop, of dimensions 5 units x 5 units.
