@@ -16,7 +16,6 @@ Install yarn through [Homebrew](https://brew.sh/):
 brew install yarn
 ```
 
-
 ## How to use
 
 First, install and use the correct node version and install dependencies:
