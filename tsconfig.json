@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "es2020",
     "module": "commonjs",
     "strict": true,
     "outDir": "build",
@@ -8,6 +8,6 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   }
 }
