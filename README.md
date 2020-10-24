@@ -40,6 +40,18 @@ Builds the app at `build`, cleaning the folder first.
 
 Starts the application in development using `nodemon` and `ts-node` to do hot reloading.
 
+#### `yarn run lint`
+
+Lint TypeScript code using ESLint.
+
+#### `yarn run lint:fix`
+
+Lint TypeScript code using ESLint and attempt to fix linting errors.
+
+#### `yarn run format`
+
+Format code using Prettier.
+
 ## Description
 
 - The application is a simulation of a toy robot moving on a square tabletop, of dimensions 5 units x 5 units.
