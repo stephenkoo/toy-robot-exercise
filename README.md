@@ -1,5 +1,46 @@
 # Robot Challenge
 
+## Getting started
+
+Skip this section if you have Node Version Manager (nvm) and yarn installed.
+
+Install [nvm](https://github.com/nvm-sh/nvm#install--update-script):
+
+```sh
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.36.0/install.sh | bash
+```
+
+Install yarn through [Homebrew](https://brew.sh/):
+
+```sh
+brew install yarn
+```
+
+
+## How to use
+
+First, install and use the correct node version and install dependencies:
+
+```sh
+nvm install
+nvm use
+yarn install
+```
+
+### Scripts
+
+#### `yarn run start`
+
+Starts the app in production by first building the project with `yarn run build`, and then executing the compiled JavaScript at `build/index.js`.
+
+#### `yarn run build`
+
+Builds the app at `build`, cleaning the folder first.
+
+#### `yarn run dev`
+
+Starts the application in development using `nodemon` and `ts-node` to do hot reloading.
+
 ## Description
 
 - The application is a simulation of a toy robot moving on a square tabletop, of dimensions 5 units x 5 units.
