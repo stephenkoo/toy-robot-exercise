@@ -7,6 +7,9 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^14.14.2",
+    "@typescript-eslint/eslint-plugin": "^4.5.0",
+    "@typescript-eslint/parser": "^4.5.0",
+    "eslint": "^7.12.0",
     "nodemon": "^2.0.6",
     "rimraf": "^3.0.2",
     "ts-node": "^9.0.0",
@@ -15,6 +18,8 @@
   "scripts": {
     "dev": "nodemon --watch src -e ts --exec ts-node src/index.ts",
     "build": "rimraf ./build && tsc",
-    "start": "yarn run build && node build/index.js"
+    "start": "yarn run build && node build/index.js",
+    "lint": "eslint . --ext .ts --cache",
+    "lint:fix": "eslint . --ext .ts --cache --fix"
   }
 }
