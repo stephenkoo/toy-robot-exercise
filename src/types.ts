@@ -39,3 +39,16 @@ export type PlaceCommandAction = Action<Command.Place> & {
 export type TurnCommandAction = Action<
   Extract<Command, Command.Left | Command.Right>
 >;
+
+export type OtherCommandAction = Action<
+  Extract<Command, Command.Move | Command.Report>
+>;
+
+/**
+ * Stricter type than a generic Action.
+ * CommandAction["type"] must be one of the Command enum values
+ */
+export type CommandAction =
+  | PlaceCommandAction
+  | TurnCommandAction
+  | OtherCommandAction;
