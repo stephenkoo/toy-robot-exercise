@@ -1,1 +1,3 @@
-console.log("Hello World");
+import { runRobotApp } from "./cli";
+
+runRobotApp();

@@ -21,6 +21,15 @@ export type RobotState = {
 };
 
 /**
+ * When the robot is not yet placed on the tabletop when the app is initialized,
+ * its value is null.
+ */
+export type AppState = {
+  robot: RobotState | null;
+  tabletopBoundary: XYCoordinates;
+};
+
+/**
  * Action types that are dispatched to change the app's robot state.
  */
 export type Action<Type = string> = {
