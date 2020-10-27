@@ -35,3 +35,7 @@ export type Action<Type = string> = {
 export type PlaceCommandAction = Action<Command.Place> & {
   data: RobotState;
 };
+
+export type TurnCommandAction = Action<
+  Extract<Command, Command.Left | Command.Right>
+>;
