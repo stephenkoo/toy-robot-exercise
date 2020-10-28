@@ -64,6 +64,40 @@ Runs the jest tests.
 
 Run the jest tests in watch mode - re-runs tests after file changes.
 
+## My comments and thoughts
+
+The app is in decent state and reflects how I code in a professional environment.
+That said, I stopped before spending too much time on it.
+
+If continuing to work on the app, I’d like to work on the following:
+
+1. Add pre-commit hooks for testing and linting code. (I tried to implement this using [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged) but the latest version of husky wasn’t working and so I decided to bench it for the moment.)
+2. Add a code coverage threshold and write additional tests to meet those thresholds
+3. Some form of E2E testing
+4. Dockerize and implement basic CI/CD
+5. A cleaner directory structure (e.g. better file structure for terminal messages)
+
+### Why did you code it like that?
+
+To keep the code as readable as possible for the reviewer, I’ve intentionally avoided using additional packages to prettify the terminal output (like [chalk](https://github.com/chalk/chalk)) or helpful utility libraries that simplify writing CLI interfaces (like [inquirer](https://github.com/SBoudrias/Inquirer.js/) and [commander](https://github.com/tj/commander.js)).
+I’d utilise these libraries if building an actual CLI app.
+
+I find functionally programmed code easier to understand and maintain over object oriented programming and so I’ve avoided side-effects and mutations as much as possible.
+Drawing a bit from react & redux, I've implement a semi-action/dispatch/state reducer pattern to avoid directly mutating states.
+
+Commit messages follow the [conventional commits spec](https://www.conventionalcommits.org/en/v1.0.0/#specification) for better readability.
+
+### Potential features
+
+Some additional feature opportunities:
+
+1. User can save data (robot coordinates, direction and tabletop dimensions) in a file and the option to load state from the file
+2. User can execute commands from a file instead of via terminal input
+3. User can modify tabletop dimensions (the moveRobot function can already handle varying tabletop dimensions, but the the option is not exposed to the user in the terminal)
+4. User can modify the number of steps taken in one MOVE command
+5. User can move robot diagonally (e.g. "NORTHEAST", "SOUTHWEST")
+6. Users can add multiple robots on the tabletop (including logic preventing collisions)
+7. Users receive more helpful & intelligent error messages (e.g. if a command would move a robot off the tabletop, give the user the option to ignore the command or to move the robot to the edge of the tabletop instead.)
 
 ## Description
 
