@@ -1,5 +1,9 @@
 # Robot Challenge
 
+A simple CLI app to move a toy robot around a tabletop as a coding exercise.
+
+Built with Node, TypeScript, Jest, ESLint, Prettier.
+
 ## Getting started
 
 Skip this section if you have Node Version Manager (nvm) and yarn installed.
