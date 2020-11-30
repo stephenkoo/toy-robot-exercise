@@ -1,55 +1,77 @@
-import {
-  getOutsideTabletopErrorMessage,
-  robotNotPlacedErrorMessage,
-} from "../../messages";
-import { Direction, RobotState, XYCoordinates } from "../../types";
-import {
-  defaultRobotStepsPerMove,
-  defaultTabletopBoundary,
-} from "../../variables";
+import { Direction, RobotState, XYDirection, XYCoordinates } from "../../types";
+import { defaultTabletopBoundary } from "../../variables";
 import { isOutsideBoundary } from "../utils";
+import { curry, compose } from "ramda";
+import {
+  RobotNotOnTabletopError,
+  UserFacingError,
+  ErrorHandler,
+} from "../../errors";
 
-/**
- * @param state - current robot state which includes coordinates & direction
- * @param tabletopBoundary - throws error if move would cause robot to move
- * outside the tabletop boundary
- * @param stepsPerMove - amount of steps taken in the robot's direction
- * @returns new robot state with new coordinates after moving in the direction
- * the robot was facing
- */
+const getXYDirection = (cardinalDirection: Direction): XYDirection => {
+  switch (cardinalDirection) {
+    case Direction.North: {
+      return [0, 1];
+    }
+    case Direction.South: {
+      return [0, -1];
+    }
+    case Direction.East: {
+      return [-1, 0];
+    }
+    case Direction.West: {
+      return [1, 0];
+    }
+  }
+};
+
+const getMoveDistance = curry(
+  (direction: XYDirection, magnitude: number): XYCoordinates =>
+    direction.map((coordinate) => magnitude * coordinate) as XYCoordinates
+);
+
+const getCoordinateDifference = compose(getMoveDistance, getXYDirection);
+
+const getChangedCoordinates = curry(
+  (
+    coordinates: XYCoordinates,
+    coordinateDifference: XYCoordinates
+  ): XYCoordinates =>
+    (coordinates as number[]).map(
+      (coordinate, index) => coordinate + coordinateDifference[index]
+    ) as XYCoordinates
+);
+
+const getNewCoordinates = (
+  coordinates: XYCoordinates,
+  direction: Direction,
+  magnitude: number
+) => {
+  const coordinateDifference = getCoordinateDifference(direction)(magnitude);
+  const newCoordinates = getChangedCoordinates(
+    coordinates,
+    coordinateDifference
+  );
+  return newCoordinates;
+};
+
 export const moveRobot = (
   state: RobotState | null,
   tabletopBoundary: XYCoordinates = defaultTabletopBoundary,
-  stepsPerMove: number = defaultRobotStepsPerMove
-): RobotState | never => {
-  if (!state) throw Error(robotNotPlacedErrorMessage);
+  moveSteps: number
+): RobotState | void => {
+  try {
+    if (!state) throw RobotNotOnTabletopError;
 
-  const { coordinates, direction } = state;
-  const [x, y] = coordinates;
+    const { coordinates, direction } = state;
+    const newCoordinates = getNewCoordinates(coordinates, direction, moveSteps);
 
-  let newCoordinates: XYCoordinates;
+    if (isOutsideBoundary(newCoordinates, tabletopBoundary)) {
+      throw new UserFacingError("You can’t move the robot beyond the table");
+    }
 
-  switch (direction) {
-    case Direction.North: {
-      newCoordinates = [x, y + stepsPerMove];
-      break;
-    }
-    case Direction.South: {
-      newCoordinates = [x, y - stepsPerMove];
-      break;
-    }
-    case Direction.East: {
-      newCoordinates = [x + stepsPerMove, y];
-      break;
-    }
-    case Direction.West: {
-      newCoordinates = [x - stepsPerMove, y];
-    }
+    return { ...state, coordinates: newCoordinates };
+  } catch (err) {
+    ErrorHandler(err);
   }
-
-  if (isOutsideBoundary(newCoordinates, tabletopBoundary)) {
-    throw Error(getOutsideTabletopErrorMessage(tabletopBoundary));
-  }
-
-  return { ...state, coordinates: newCoordinates };
 };

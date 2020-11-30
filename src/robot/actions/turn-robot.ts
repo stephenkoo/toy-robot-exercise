@@ -1,35 +1,57 @@
-import { robotNotPlacedErrorMessage } from "../../messages";
-import { Command, RobotState, TurnCommandAction } from "../../types";
-import { clockwiseDirections } from "../../variables";
+import { RobotState, TurnCommand, Direction } from "../../types";
 import { getCircularArrayIndex } from "../utils";
+import { curry } from "ramda";
+import { RobotNotOnTabletopError, ErrorHandler } from "../../errors";
+import { clockwiseDirections } from "../../variables";
 
-/**
- * @param state - robot state (null if not placed on tabletop)
- * @param action - turn command action object with action.type of
- * "LEFT" or "RIGHT"
- * @param rotationAmount - number of indexes to jump per rotation in the
- * clockwiseDirections array.
- * @returns new robot state with new direction
- */
-export const turnRobot = (
-  state: RobotState | null,
-  action: TurnCommandAction,
-  rotationAmount = 1
-): RobotState | never => {
-  if (!state) throw Error(robotNotPlacedErrorMessage);
+const getTurnIncrement = curry(
+  (turnDirection: TurnCommand, turnSteps): number =>
+    turnDirection === TurnCommand.Right ? turnSteps : -turnSteps
+);
 
-  const currentDirectionIndex = clockwiseDirections.indexOf(state.direction);
-
-  const increment =
-    action.type === Command.Right ? rotationAmount : -rotationAmount;
+const getNewTurnDirection = (
+  directions: Direction[],
+  currentDirection: Direction,
+  turnDirection: TurnCommand,
+  turnSteps = 1
+): Direction => {
+  const currentDirectionIndex = directions.indexOf(currentDirection);
+  const turnIncrement = getTurnIncrement(turnDirection, turnSteps);
 
   const newDirectionIndex = getCircularArrayIndex(
-    clockwiseDirections,
+    directions.length,
     currentDirectionIndex,
-    increment
+    turnIncrement
   );
 
-  const newDirection = clockwiseDirections[newDirectionIndex];
-
-  return { ...state, direction: newDirection };
+  const newDirection = directions[newDirectionIndex];
+  return newDirection;
 };
+
+export const turnRobot = curry(
+  (
+    turnDirection: TurnCommand,
+    state: null,
+    turnSteps: number
+  ): RobotState | undefined => {
+    try {
+      if (!state) throw RobotNotOnTabletopError;
+
+      const { direction, ...rest } = state;
+
+      const newDirection = getNewTurnDirection(
+        clockwiseDirections,
+        direction,
+        turnDirection,
+        turnSteps
+      );
+
+      return {
+        ...rest,
+        direction: newDirection,
+      };
+    } catch (err) {
+      ErrorHandler(err);
+    }
+  }
+);

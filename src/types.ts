@@ -1,4 +1,5 @@
-export type XYCoordinates = [number, number];
+// export type XYCoordinates<T = number> = [T, T];
+export type XYCoordinates<T = number> = [T, T];
 
 export enum Direction {
   North = "NORTH",
@@ -7,13 +8,27 @@ export enum Direction {
   West = "WEST",
 }
 
-export enum Command {
+type XYDirectionUnit = 0 | 1 | -1;
+
+export type XYDirection = XYCoordinates<XYDirectionUnit>;
+
+export enum TurnCommand {
   Left = "LEFT",
   Right = "RIGHT",
+}
+
+export enum NonTurnCommand {
   Place = "PLACE",
   Move = "MOVE",
   Report = "REPORT",
 }
+
+export type Command = TurnCommand | NonTurnCommand;
+
+export type CommandObject = {
+  command: Command;
+  arguments: string[];
+};
 
 export type RobotState = {
   coordinates: XYCoordinates;

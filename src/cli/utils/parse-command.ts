@@ -1,16 +1,49 @@
-import { invalidCommandErrorMessage } from "../../messages";
-import { Command, CommandAction } from "../../types";
 import { normalizeInput } from "./normalize-input";
-import { parsePlaceCommandArguments } from "./parse-place-command-arguments";
+import { getValidCommand, getCommandsAsArray } from "./get-valid-command";
+import {
+  Command,
+  CommandObject,
+  TurnCommand,
+  NonTurnCommand,
+} from "../../types";
+import { UserFacingError, ErrorHandler } from "../../errors/index";
+import { commands } from "../../variables";
+
+type Command = {
+  command: string | null;
+  arguments: string[];
+};
+
+const removeEmptyStrings = (array: string[]) =>
+  array.filter((element) => !!element);
 
 /**
  * @param input - takes raw command line string
- * @returns CommandAction data object to apply to the robot.
+ * @returns command object
  */
-export const parseCommand = (input: string): CommandAction | never => {
-  const normalizedInput = normalizeInput(input);
-  const [command, ...args] = normalizedInput.split(" ");
+export const parseCommand = (input: string): CommandObject | undefined => {
+  try {
+    const normalizedInput = normalizeInput(input);
+    const [commandString, ...args] = normalizedInput.split(" ");
 
+    const command = getValidCommand(commandString);
+
+    if (!command) {
+      throw new UserFacingError(
+        `Command is invalid. Valid commands: ${commands.join(", ")}`
+      );
+    }
+
+    return {
+      command,
+      arguments: removeEmptyStrings(args),
+    };
+  } catch (err) {
+    ErrorHandler(err);
+  }
+};
+
+/**
   switch (command) {
     case Command.Place: {
       const [x, y, direction] = parsePlaceCommandArguments(args[0]);
@@ -34,4 +67,4 @@ export const parseCommand = (input: string): CommandAction | never => {
       throw Error(invalidCommandErrorMessage);
     }
   }
-};
+ */

@@ -1,3 +1,3 @@
-import { runRobotApp } from "./cli";
+// import { runRobotApp } from "./cli";
 
-runRobotApp();
+// runRobotApp();
